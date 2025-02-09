@@ -1,42 +1,39 @@
-const mongoose = require('mongoose');  // Importing mongoose for MongoDB interaction
+const mongoose = require('mongoose');
 
-// Defining the schema for the "User" collection
 const userSchema = new mongoose.Schema({
     Title: {
         type: String,
-        unique: true,  // Ensures each title is unique
-        minlength: [5, 'Title must be at least 5 characters long'],  // Minimum length validation
+        unique: true,
+        minlength: [5, 'Title must be at least 5 characters long'],
     },
     Content: {
         type: String,
-        required: true,  // Content field is mandatory
-        minlength: [50, 'Content must be at least 50 characters long'],  // Minimum length validation
+        required: true,
+        minlength: [50, 'Content must be at least 50 characters long'],
     },
     Author: {
         type: String,
-        required: true,  // Author field is mandatory
+        required: true,
     },
     Tags: {
-        type: [String],  // Array of strings to store tags
+        type: [String], 
     },
     Category: {
         type: String,
-        default: 'General',  // Default category if none is provided
-        required: true,  // Category is mandatory
+        default: 'General',
+        required: true,
     },
     Likes: {
-        type: [String],  // Array of user IDs who liked the post
+        type: [String],
     },
-    comments: [  // Array of comment objects
+    comments: [
         {
-            username: { type: String, required: true },  // Commenter's username (required)
-            message: { type: String, required: true, maxlength: 500 },  // Comment text (max 500 chars)
-            commentedAt: { type: Date, default: Date.now },  // Timestamp for when the comment was posted
+            username: { type: String, required: true },
+            message: { type: String, required: true, maxlength: 500 },
+            commentedAt: { type: Date, default: Date.now },
         },
     ],
-}, { timestamps: true });  // ✅ Automatically adds createdAt & updatedAt fields
+}, { timestamps: true });  // ✅ Automatically adds createdAt & updatedAt
 
-// Creating a model named 'User' from the schema
 const users = mongoose.model('User', userSchema);  
-
-module.exports = users;  // Exporting the model to use in other parts of the application
+module.exports = users;  
