@@ -1,74 +1,42 @@
-const mongoose = require('mongoose'); // Corrected the require statement
+const mongoose = require('mongoose');  // Importing mongoose for MongoDB interaction
 
-// Define the Comment Schema (Subdocument for blog posts)
-const CommentSchema = mongoose.Schema({
-    // Username of the commenter
-    Username: {
-        type: String,
-        required: true, // Commenter username is required
-    },
-    // The comment text
-    Message: {
-        type: String,
-        required: true, // Message is required
-    },
-    // Automatically records the comment creation time
-    Commented_At: {
-        type: Date,
-        default: Date.now, // Use Date.now to store the current timestamp
-    }
-});
-
-// Define the main Post Schema
-const PostSchema = mongoose.Schema({
-    // Serves as the title of the blog post
+// Defining the schema for the "User" collection
+const userSchema = new mongoose.Schema({
     Title: {
         type: String,
-        required: true,
-        unique: true, // Ensures that the title is unique
-        minlength: [5, 'Title must be at least 5 characters long'],
+        unique: true,  // Ensures each title is unique
+        minlength: [5, 'Title must be at least 5 characters long'],  // Minimum length validation
     },
-    // The main content of the blog post
     Content: {
         type: String,
-        required: true,
-        minlength: [50, 'Content must be at least 50 characters long'],
+        required: true,  // Content field is mandatory
+        minlength: [50, 'Content must be at least 50 characters long'],  // Minimum length validation
     },
-    // Username of the author
     Author: {
         type: String,
+        required: true,  // Author field is mandatory
     },
-    // Optional field for storing tags or keywords related to the post
     Tags: {
-        type: [String],
-        default: [],
+        type: [String],  // Array of strings to store tags
     },
-    // Indicates the post category
     Category: {
         type: String,
-        default: 'General', // Default category is 'General'
+        default: 'General',  // Default category if none is provided
+        required: true,  // Category is mandatory
     },
-    // Stores usernames of users who liked the post
     Likes: {
-        type: [String],
-        default: [],
+        type: [String],  // Array of user IDs who liked the post
     },
-    // Automatically records the post creation time
-    Created_At: {
-        type: Date,
-        default: Date.now, // Automatically set current timestamp
-    },
-    // Automatically updated on modifications
-    Updated_At: {
-        type: Date,
-        default: Date.now, // Set initial updated time to creation time
-    },
-    // Array of comments (Subdocuments)
-    Comments: [CommentSchema], // Embeds the comment schema into the post
-}, { timestamps: true }); // Automatically handle `Created_At` and `Updated_At`
+    comments: [  // Array of comment objects
+        {
+            username: { type: String, required: true },  // Commenter's username (required)
+            message: { type: String, required: true, maxlength: 500 },  // Comment text (max 500 chars)
+            commentedAt: { type: Date, default: Date.now },  // Timestamp for when the comment was posted
+        },
+    ],
+}, { timestamps: true });  // ✅ Automatically adds createdAt & updatedAt fields
 
-// Create the Post model using the PostSchema
-const Post = mongoose.model('Post', PostSchema);
+// Creating a model named 'User' from the schema
+const users = mongoose.model('User', userSchema);  
 
-// Export the Post model
-module.exports = Post;
+module.exports = users;  // Exporting the model to use in other parts of the application
